@@ -1,0 +1,40 @@
+﻿<Page x:Class="WatchLocalUI.Presentation.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:WatchLocalUI.Presentation"
+      xmlns:uen="using:Uno.Extensions.Navigation.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      xmlns:um="using:Uno.Material"
+      NavigationCacheMode="Required"
+      Background="{ThemeResource BackgroundBrush}">
+  <ScrollViewer IsTabStop="True">
+    <Grid utu:SafeArea.Insets="VisibleBounds">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+      <utu:NavigationBar Content="Welcome to Watch Local" />
+
+      <StackPanel VerticalAlignment="Center" Grid.Row="1"
+            HorizontalAlignment="Center"
+            Spacing="16">
+            <TextBlock Text="Pick the location where the files should be downloaded"
+                FontSize="24"
+                FontWeight="Bold"
+                HorizontalAlignment="Center" />
+        <Button HorizontalAlignment="Center" Content="Pick Folder"
+            Command="{Binding PickFolder}" />
+            <TextBlock Text="{Binding SelectedFolder}"
+                FontSize="16"
+                HorizontalAlignment="Center"
+                Margin="0,8,0,0" />
+        <Button Content="Continue"
+            HorizontalAlignment="Center"
+            Margin="0,8,0,0"
+            Command="{Binding Continue}"
+            Visibility="{Binding ContinueButtonVisibility}"
+           />
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
+</Page>

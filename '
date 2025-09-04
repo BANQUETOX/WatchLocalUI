@@ -1,0 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using WatchLocalUI.WatchLocalLogic.Managers;
+using WatchLocalUI.WatchLocalLogic.Classes;
+
+namespace WatchLocalUI.Presentation;
+
+public class ChannelViewModel
+{
+    public string? ChannelName { get; set; }
+    public string? ChannelScannAfter { get; set; }
+    public List<FileInfo> FileList { get; set; }
+    public ChannelViewModel(ChannelTime Channel)
+    {
+        FileList = new List<FileInfo>();
+        ChannelName = Channel.ChannelPropeties.Title;
+        ChannelScannAfter = Channel.GetScannAfter().Date.ToShortDateString();
+        getChannelVideos();
+    }
+    public void getChannelVideos()
+    {
+        var mediaDirectoryPath = StorageManager.GetMediaDirectoryPath();
+        var channelDirectory = new DirectoryInfo(mediaDirectoryPath + $"/{ChannelName}");
+        if (!channelDirectory.Exists)
+        {
+            return;
+        }
+        else 
+        {
+           foreach ( var file in channelDirectory.EnumerateFiles())
+            {
+                FileList.Add(file);
+            }
+            Console.WriteLine(FileList);
+           
+        }
+    }
+
+}

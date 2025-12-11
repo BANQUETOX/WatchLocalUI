@@ -51,27 +51,29 @@
 
         </StackPanel>
 
-        <!-- Test for multiple circles-->
-        <StackPanel Margin="0,150,0,0" HorizontalAlignment="Center">
-            <!--Create multiple channels-->
-            <ItemsRepeater ItemsSource="{Binding Channels}">
-                <ItemsRepeater.ItemTemplate>
-                    <DataTemplate x:DataType="watchLocalClass:ChannelTime" >
-                        <Button Background="Transparent" BorderThickness="0" Padding="0" uen:Navigation.Request="Channel" uen:Navigation.Data="{x:Bind}" >
-                            <Canvas Width="100" Height="100" Grid.Column="0" Grid.Row="0">
-                                <Ellipse Width="100" Height="100">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{x:Bind picturePath}" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <!--<Ellipse Width="24" Height="24" Fill="Red" Canvas.Left="76" Canvas.Top="0"/>
+        <ScrollViewer Margin="0,150,0,0" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                <!--Create multiple channels-->
+                <ItemsRepeater ItemsSource="{Binding Channels}">
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="watchLocalClass:ChannelTime" >
+                            <Button Background="Transparent" BorderThickness="0" Padding="0" uen:Navigation.Request="Channel" uen:Navigation.Data="{x:Bind}" >
+                                <Canvas Width="100" Height="100" Grid.Column="0" Grid.Row="0">
+                                    <Ellipse Width="100" Height="100">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{x:Bind picturePath}" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                    <!--<Ellipse Width="24" Height="24" Fill="Red" Canvas.Left="76" Canvas.Top="0"/>
                                 <TextBlock Text="5" Foreground="White" FontSize="14" FontWeight="Bold"
                                 Canvas.Left="83" Canvas.Top="2"/>-->
-                            </Canvas>
-                        </Button>
-                    </DataTemplate>
-                </ItemsRepeater.ItemTemplate>
-            </ItemsRepeater>
-        </StackPanel>
+                                </Canvas>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+            </StackPanel>
+
+        </ScrollViewer>
     </Grid>
 </Page>

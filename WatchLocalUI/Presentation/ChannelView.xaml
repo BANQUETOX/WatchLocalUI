@@ -60,12 +60,13 @@
                 <!-- Settings Icon -->
             </Button>
         </Grid>
-            <!-- Videos Grid -->
+        <!-- Videos Grid -->
+        <ScrollViewer Grid.Row="1">
             <ItemsRepeater Grid.Row="1" ItemsSource="{Binding VideoList}">
                 <ItemsRepeater.Layout>
                     <UniformGridLayout
                     Orientation="Horizontal"
-                    MaximumRowsOrColumns="3"
+                    MaximumRowsOrColumns="12"
                     MinItemWidth="200"
                     MinItemHeight="160"/>
                 </ItemsRepeater.Layout>
@@ -87,5 +88,7 @@
                     </DataTemplate>
                 </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
+
+        </ScrollViewer>
     </Grid>
 </Page>

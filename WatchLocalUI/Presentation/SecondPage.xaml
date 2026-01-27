@@ -39,7 +39,7 @@
             </ComboBox>
             <!-- Download or Add Button-->
             <Button Width="32" Height="32" Background="Green" Command="{Binding DownloadMedia}" Visibility="{Binding DownloadButtonVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                <TextBlock Text="↓" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Text="LOL" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
 
             <DatePicker Header="Set starting scann date" SelectedDate="{Binding SelectedDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding AddChannelButtonVisibility, Mode=TwoWay}" ></DatePicker>

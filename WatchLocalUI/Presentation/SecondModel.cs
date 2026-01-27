@@ -149,6 +149,6 @@ public partial record SecondModel : INotifyPropertyChanged
         await DownloadManager.DownloadMedia();
 
     }
-    
 
+    
 }

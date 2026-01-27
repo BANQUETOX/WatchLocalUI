@@ -60,36 +60,32 @@
                 <!-- Settings Icon -->
             </Button>
         </Grid>
-
-        <!-- Videos Grid -->
-        <ItemsRepeater Grid.Row="1" ItemsSource="{Binding VideoList}">
-            <ItemsRepeater.Layout>
-                <UniformGridLayout
-                    Orientation="Vertical"
+            <!-- Videos Grid -->
+            <ItemsRepeater Grid.Row="1" ItemsSource="{Binding VideoList}">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout
+                    Orientation="Horizontal"
                     MaximumRowsOrColumns="3"
                     MinItemWidth="200"
                     MinItemHeight="160"/>
-            </ItemsRepeater.Layout>
+                </ItemsRepeater.Layout>
 
-            <ItemsRepeater.ItemTemplate>
-                <DataTemplate x:DataType="wlc:VideoItem">
-                    <StackPanel Margin="10" Width="200">
-                        <Rectangle Width="200" Height="120" >
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="{x:Bind TumbNailPath }"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <TextBlock Text="{x:Bind Name}"
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="wlc:VideoItem">
+                        <StackPanel Margin="10" Width="200">
+                            <Rectangle Width="200" Height="120" >
+                                <Rectangle.Fill>
+                                    <ImageBrush ImageSource="{x:Bind TumbNailPath }"/>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock Text="{x:Bind Name}"
                                    Foreground="White"
                                    FontSize="14"
                                    FontWeight="SemiBold"
-                                   Margin="0,8,0,0"/>
-                        <TextBlock Text="Que pasa garbanzos"
-                                   Foreground="White"
-                                   FontSize="12" />
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsRepeater.ItemTemplate>
-        </ItemsRepeater>
+                                   Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
     </Grid>
 </Page>

@@ -23,14 +23,14 @@ public class ChannelViewModel
         ChannelName = Channel.ChannelPropeties.Title;
         ChannelScannAfter = Channel.GetScannAfter().Date.ToShortDateString();
         ChannelPicturePath = Channel.picturePath;   
-        getChannelVideos();
+        getChannelDownloads();
         _navigator = navigator;
     }
-    public void getChannelVideos()
+    public void getChannelDownloads()
     {
         var mediaDirectoryPath = StorageManager.GetMediaDirectoryPath();
         var cleanChannelName = DownloadManager.CleanUpTitleName(ChannelName); 
-        var channelDirectory = new DirectoryInfo(mediaDirectoryPath + $"/{cleanChannelName}");
+        var channelDirectory = new DirectoryInfo(Path.Combine(mediaDirectoryPath,cleanChannelName));
         if (!channelDirectory.Exists)
         {
             return;
@@ -41,7 +41,7 @@ public class ChannelViewModel
             {
                 foreach( var file in dir.EnumerateFiles())
                 {
-                    if (file.Extension == ".mp4")
+                    if (file.Extension == ".mp4" || file.Extension == ".mp3")
                     {
                         var video = new VideoItem();
                         video.Name = file.Name;

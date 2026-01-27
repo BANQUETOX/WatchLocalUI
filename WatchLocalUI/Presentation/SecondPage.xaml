@@ -63,7 +63,7 @@
                 </ItemsRepeater.Layout>
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate x:DataType="watchLocalClass:ChannelTime" >
-                        <Button Background="Transparent" BorderThickness="0" Padding="0 0 0 20 " uen:Navigation.Request="Channel" uen:Navigation.Data="{x:Bind}" >
+                        <Button Background="Transparent" BorderThickness="0" Padding="0 0 0 25 " uen:Navigation.Request="Channel" uen:Navigation.Data="{x:Bind}" >
                             <Canvas Width="100" Height="100" Grid.Column="0" Grid.Row="0">
                                 <Ellipse Width="100" Height="100">
                                     <Ellipse.Fill>
@@ -73,7 +73,7 @@
                                 <Ellipse Width="24" Height="24" Fill="Red" Canvas.Left="76" Canvas.Top="0"/>
                                 <TextBlock Text="5" Foreground="White" FontSize="14" FontWeight="Bold"
                                 Canvas.Left="83" Canvas.Top="2"/>
-                                <TextBlock Canvas.Top="100" Text="{x:Bind ChannelPropeties.Title}" Foreground="White"/>
+                                <TextBlock Canvas.Top="105" Text="{x:Bind ChannelPropeties.Title}" Foreground="White"/>
                             </Canvas>
                         </Button>
                     </DataTemplate>

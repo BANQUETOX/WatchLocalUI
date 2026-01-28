@@ -125,7 +125,7 @@ public partial record SecondModel : INotifyPropertyChanged
     {
         var selectedDate = await SelectedDate.Value();
         Console.WriteLine(selectedDate.Date);
-        await ChannelManager.AddChannelToList(_youtubeLink,selectedDate);
+        await ChannelManager.AddChannelToList(_youtubeLink,selectedDate,true);
 
     }
     public async Task DownloadMedia()

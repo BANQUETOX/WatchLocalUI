@@ -13,7 +13,7 @@ namespace Watch_Local.Managers
     public class ChannelManager
     {
         private static readonly YoutubeClient youtube = new();
-        private static  List<ChannelTime>? channels;
+        private static  List<ChannelTime>? channels = [];
 
         public static void SetChannelsSaved(List<ChannelTime> channelsSaved)
         {
@@ -165,7 +165,7 @@ namespace Watch_Local.Managers
 
 
         }
-        public static async Task AddChannelToList(string inputUrl,DateTimeOffset scanningDate)
+        public static async Task AddChannelToList(string inputUrl,DateTimeOffset scanningDate,bool scann)
         {
             YoutubeExplode.Channels.Channel channel;
             try
@@ -181,9 +181,12 @@ namespace Watch_Local.Managers
                     //Sets OnlyAudio as false and updateScannDate as true in every channel by default
                     var cleanChannelName = DownloadManager.CleanUpTitleName(channel.Title);
                     DownloadManager.UpdateChannelIcon(channel);
-                    ChannelTime channelToSave = new(channel, scanningDate, false, true, $"{StorageManager.GetMediaDirectoryPath()}/{cleanChannelName}/{cleanChannelName}.jpg");
+                    ChannelTime channelToSave = new(channel, scanningDate, false, true, $"{StorageManager.GetMediaDirectoryPath()}/{cleanChannelName}/{cleanChannelName}.jpg",scann);
                     channels!.Add(channelToSave);
-                    Console.WriteLine($"{channel} added for tracking successfully");
+                    if (scann)
+                    {
+                        Console.WriteLine($"{channel} added for tracking successfully");
+                    }
                     StorageManager.SaveChanges();
                 }
 

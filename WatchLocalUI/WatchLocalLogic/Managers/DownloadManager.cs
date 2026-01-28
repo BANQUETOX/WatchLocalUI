@@ -40,6 +40,7 @@ namespace Watch_Local.Managers
                     await youtube.Videos.DownloadAsync(video.Url, $"{pathForVideo.FullName}/{videoTitle}.mp4", o => o
                     .SetPreset(ConversionPreset.UltraFast));
                     downloadAttemps = 5;
+                    await ChannelManager.AddChannelToList(video.Author.ChannelUrl,DateTimeOffset.UtcNow,false);
                     Console.WriteLine($"{videoTitle} downloaded successfully! ");
                 }
                 catch (Exception e)
@@ -77,6 +78,7 @@ namespace Watch_Local.Managers
                     }
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{pathForVideo}/{audioTitle}.mp3");
                     downloadAttemps = 5;
+                    await ChannelManager.AddChannelToList(video.Author.ChannelUrl,DateTimeOffset.UtcNow,false);
                     Console.WriteLine($"{audioTitle} downloaded successfully!");
                 }
                 catch (Exception e)
@@ -236,32 +238,35 @@ namespace Watch_Local.Managers
             {
                 foreach (ChannelTime channelSaved in ChannelManager.GetChannelsListed()!)
                 {
-                    var videos = await youtube.Channels.GetUploadsAsync($"https://youtube.com/channel/{channelSaved.ChannelPropeties.Id}");
-                    foreach (var video in videos)
+                    if (channelSaved.scann == true)
                     {
-                        var NewURL = video.Url.Split('&');
-                        var videoToSave = await youtube.Videos.GetAsync(NewURL[0]);
-                        if (videoToSave.UploadDate > channelSaved.GetScannAfter())
+                        var videos = await youtube.Channels.GetUploadsAsync($"https://youtube.com/channel/{channelSaved.ChannelPropeties.Id}");
+                        foreach (var video in videos)
                         {
-                            if (!VideoDownloaded(videoToSave))
+                            var NewURL = video.Url.Split('&');
+                            var videoToSave = await youtube.Videos.GetAsync(NewURL[0]);
+                            if (videoToSave.UploadDate > channelSaved.GetScannAfter())
                             {
-                                AddVideoToPendingList(videoToSave, channelSaved.GetIsOnlyAudio());
+                                if (!VideoDownloaded(videoToSave))
+                                {
+                                    AddVideoToPendingList(videoToSave, channelSaved.GetIsOnlyAudio());
+
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"No more videos on time range for {channelSaved.ChannelPropeties.Title}");
+                                break;
 
                             }
+
                         }
-                        else
+                        if (channelSaved.updateScannDate)
                         {
-                            Console.WriteLine($"No more videos on time range for {channelSaved.ChannelPropeties.Title}");
-                            break;
-
+                            var lastVideo = await youtube.Videos.GetAsync(videos[0].Url.Split('&')[0]);
+                            channelSaved.SetScannAfter(lastVideo.UploadDate);
+                            StorageManager.SaveChanges();
                         }
-
-                    }
-                    if (channelSaved.updateScannDate)
-                    {
-                        var lastVideo = await youtube.Videos.GetAsync(videos[0].Url.Split('&')[0]);
-                        channelSaved.SetScannAfter(lastVideo.UploadDate);
-                        StorageManager.SaveChanges();
                     }
 
                 }

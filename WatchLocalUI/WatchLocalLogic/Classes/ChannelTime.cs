@@ -12,15 +12,17 @@ public class ChannelTime
     public DateTimeOffset scannAfter;
     public bool onlyAudio;
     public bool updateScannDate;
+    public bool scann;
     public string picturePath;
 
-    public ChannelTime(YoutubeExplode.Channels.Channel channelPropeties, DateTimeOffset scannAfter, bool onlyAudio, bool updateScannDate, string picturePath)
+    public ChannelTime(YoutubeExplode.Channels.Channel channelPropeties, DateTimeOffset scannAfter, bool onlyAudio, bool updateScannDate, string picturePath,bool scann)
     {
         ChannelPropeties = channelPropeties;
         this.scannAfter = scannAfter;
         this.onlyAudio = onlyAudio;
         this.updateScannDate = updateScannDate;
         this.picturePath = picturePath;
+        this.scann = scann;
     }
 
     public void ToggleOnlyAudio()
@@ -32,6 +34,11 @@ public class ChannelTime
     {
         updateScannDate = !updateScannDate;
 
+    }
+
+    public void ToggleScann()
+    {
+        scann = !scann;
     }
 
     public bool GetIsOnlyAudio()

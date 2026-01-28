@@ -62,7 +62,7 @@
         </Grid>
         <!-- Videos Grid -->
         <ScrollViewer Grid.Row="1">
-            <ItemsRepeater Grid.Row="1" ItemsSource="{Binding VideoList}">
+            <ItemsRepeater ItemsSource="{Binding VideoList}">
                 <ItemsRepeater.Layout>
                     <UniformGridLayout
                     Orientation="Horizontal"

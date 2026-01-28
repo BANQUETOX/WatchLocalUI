@@ -12,54 +12,58 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uen="using:Uno.Extensions.Navigation.UI"
     mc:Ignorable="d"
-    Background="{ThemeResource BackgroundBrush}"> 
-   
-   <Grid Padding="15">
-            
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0">
-             <TextBlock Text="Channel List" FontSize="20" Foreground="White" VerticalAlignment="Center"/>
-        </StackPanel>
+    Background="{ThemeResource BackgroundBrush}">
 
-        <!-- Top UI Bar -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Spacing="10" Margin="0,50,0,0">
-            <TextBox Width="250"
+    <Grid Padding="15">
+                <!-- Top UI Bar -->
+        <Grid Margin="0 0 0 0">
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0">
+                <TextBlock Text="Channel List" FontSize="20" Foreground="White" VerticalAlignment="Center"/>
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Spacing="10" Margin="0,50,0,0">
+                <TextBox Width="250"
                      Height="32"
                      PlaceholderText="Channel or video or playlist Link"
                      VerticalAlignment="Center"
                      Text="{Binding YoutubeLink,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                      />
-            <!--Type of Download combobox-->
-            <ComboBox Width="120"
+                <!--Type of Download combobox-->
+                <ComboBox Width="120"
                       Height="32"
                       VerticalAlignment="Center"
                       SelectedIndex="{Binding SelectedIndex,Mode=TwoWay}"
                       Visibility="{Binding DownloadTypeComboBoxVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                <ComboBoxItem Content="Video"/>
-                <ComboBoxItem Content="Audio"/>
-            </ComboBox>
-            <!-- Download or Add Button-->
-            <Button Width="32" Height="32" Background="Green" Command="{Binding DownloadMedia}" Visibility="{Binding DownloadButtonVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                <TextBlock Text="LOL" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Button>
+                    <ComboBoxItem Content="Video"/>
+                    <ComboBoxItem Content="Audio"/>
+                </ComboBox>
+                <!-- Download or Add Button-->
+                <Button Width="32" Height="32" Background="Green" Command="{Binding DownloadMedia}" Visibility="{Binding DownloadButtonVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                    <TextBlock Text="↓" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
 
-            <DatePicker Header="Set starting scann date" SelectedDate="{Binding SelectedDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding AddChannelButtonVisibility, Mode=TwoWay}" ></DatePicker>
+                <DatePicker Header="Set starting scann date" SelectedDate="{Binding SelectedDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding AddChannelButtonVisibility, Mode=TwoWay}" ></DatePicker>
 
-            <Button Width="32" Height="32" Background="Blue" Command="{Binding AddChannel}" IsEnabled="{Binding IsChannelButtonEnable}"  Visibility="{Binding AddChannelButtonVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                <TextBlock Text="Nice" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Button>
+                <Button Width="32" Height="32" Background="Blue" Command="{Binding AddChannel}" IsEnabled="{Binding IsChannelButtonEnable}"  Visibility="{Binding AddChannelButtonVisibility,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                    <TextBlock Text="Nice" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
 
 
-        </StackPanel>
+            </StackPanel>
+        </Grid>
 
-        <ScrollViewer Margin="0,150,0,0" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Margin="0,150,0,0">
             <!--Create multiple channels-->
-            <ItemsRepeater Grid.Row="1"  ItemsSource="{Binding Channels}">
+            <ItemsRepeater Grid.Row="1"  ItemsSource="{Binding Channels}" MaxWidth="1000">
                 <ItemsRepeater.Layout>
                     <UniformGridLayout
-                        Orientation="Vertical"
-                        MaximumRowsOrColumns="3"
+                        Orientation="Horizontal"
+                        MaximumRowsOrColumns="6"
                         MinItemWidth="150"
-                        MinItemHeight="150"/>
+                        MinItemHeight="150"
+                        />
                 </ItemsRepeater.Layout>
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate x:DataType="watchLocalClass:ChannelTime" >

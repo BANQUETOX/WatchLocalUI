@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -9,12 +10,13 @@ namespace WatchLocalUI.Presentation;
 
 public partial record SecondModel : INotifyPropertyChanged
 {
-    public List<ChannelTime>? Channels = ChannelManager.GetChannelsListed();
+    public ObservableCollection<ChannelTime> Channels { get; }
     private string? _youtubeLink;
     private bool _isChannelButtonEnable;
     private YoutubeLinkType _linkType = YoutubeLinkType.Unknown;
     public event PropertyChangedEventHandler PropertyChanged;
     public IState<string> DownloadButtonVisibility => State<string>.Value(this, () => "Collapsed");
+    public IState<string> ScannButtonVisibility => State<string>.Value(this, () => "Collapsed");
     public IState<string> DownloadTypeComboBoxVisibility => State<string>.Value(this, () => "Collapsed");
     public IState<string> AddChannelButtonVisibility => State<string>.Value(this, () => "Collapsed");
     public IState<string> SelectedIndex => State<string>.Value(this, () => "0");
@@ -23,6 +25,9 @@ public partial record SecondModel : INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     public SecondModel()
     {
+        Channels = new ObservableCollection<ChannelTime>();
+        AddChannelsToLocalList();
+        CheckChannelsList();
     }
     public string YoutubeLink
     {
@@ -100,12 +105,14 @@ public partial record SecondModel : INotifyPropertyChanged
     {
         if (linkType == YoutubeLinkType.Video || linkType == YoutubeLinkType.Playlist)
         {
+            await ScannButtonVisibility.Set("Collapsed", CancellationToken.None);
             await DownloadTypeComboBoxVisibility.Set("Visible", CancellationToken.None);
             await DownloadButtonVisibility.Set("Visible", CancellationToken.None);
 
         }
         else if (linkType == YoutubeLinkType.Channel)
         {
+            await ScannButtonVisibility.Set("Collapsed", CancellationToken.None);
             await AddChannelButtonVisibility.Set("Visible", CancellationToken.None);
             await DownloadTypeComboBoxVisibility.Set("Collapsed", CancellationToken.None);
             await DownloadButtonVisibility.Set("Collapsed", CancellationToken.None);
@@ -113,7 +120,7 @@ public partial record SecondModel : INotifyPropertyChanged
         }
         else if (linkType == YoutubeLinkType.Unknown)
         {
-            await DownloadTypeComboBoxVisibility.Set("Collapsed", CancellationToken.None);
+            CheckChannelsList();
             await DownloadButtonVisibility.Set("Collapsed", CancellationToken.None);
             await AddChannelButtonVisibility.Set("Collapsed", CancellationToken.None);
         }
@@ -124,8 +131,8 @@ public partial record SecondModel : INotifyPropertyChanged
     public async Task AddChannel()
     {
         var selectedDate = await SelectedDate.Value();
-        Console.WriteLine(selectedDate.Date);
         await ChannelManager.AddChannelToList(_youtubeLink,selectedDate,true);
+        AddChannelsToLocalList();
 
     }
     public async Task DownloadMedia()
@@ -150,5 +157,22 @@ public partial record SecondModel : INotifyPropertyChanged
 
     }
 
-    
+   private void CheckChannelsList()
+    {
+        if (ChannelManager.GetChannelsListed().Count != 0)
+        {
+            ScannButtonVisibility.Set("Visible",CancellationToken.None);
+        }
+    } 
+
+    private void AddChannelsToLocalList()
+    {
+        foreach (var channel in ChannelManager.GetChannelsListed())
+        {
+            if (!Channels.Contains(channel))
+            {
+                Channels.Add(channel);
+            }
+        }
+    }
 }

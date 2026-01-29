@@ -50,6 +50,10 @@
                     <TextBlock Text="Nice" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button>
 
+                <Button Width="40" Height="32" Background="Gray" Command="{Binding ScannAndDownload}" IsEnabled="{Binding IsScannButtonEnable}" Visibility="{Binding ScannButtonVisibility}">
+                </Button>
+
+
 
             </StackPanel>
         </Grid>

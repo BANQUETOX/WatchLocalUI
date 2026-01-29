@@ -193,7 +193,6 @@ namespace Watch_Local.Managers
                 }
                 else
                 {
-                    //DOWNLOAD YOUTUBE IMAGE (TODO)
                     //Sets OnlyAudio as false and updateScannDate as true in every channel by default
                     var cleanChannelName = DownloadManager.CleanUpTitleName(channel.Title);
                     DownloadManager.UpdateChannelIcon(channel);

@@ -76,7 +76,7 @@ public partial record SecondModel : INotifyPropertyChanged
                 return YoutubeLinkType.Unknown;
 
             // Check for channel
-            if (uri.AbsolutePath.StartsWith("/@", StringComparison.OrdinalIgnoreCase))
+            if (uri.AbsolutePath.StartsWith("/@", StringComparison.OrdinalIgnoreCase) || uri.AbsolutePath.Contains("/channel/"))
                 return YoutubeLinkType.Channel;
 
             // Playlist check

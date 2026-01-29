@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using WatchLocalUI.WatchLocalLogic.Classes;
 using WatchLocalUI.WatchLocalLogic.Managers;
 using YoutubeExplode;
+using YoutubeExplode.Channels;
 using YoutubeExplode.Common;
+using YoutubeExplode.Search;
 
 namespace Watch_Local.Managers
 {
@@ -165,12 +167,26 @@ namespace Watch_Local.Managers
 
 
         }
-        public static async Task AddChannelToList(string inputUrl,DateTimeOffset scanningDate,bool scann)
+        public static async Task AddChannelToList(string inputUrl, DateTimeOffset scanningDate, bool scann)
         {
-            YoutubeExplode.Channels.Channel channel;
+            YoutubeExplode.Channels.Channel? channel = null;
+
             try
             {
-                channel = await youtube.Channels.GetByHandleAsync(inputUrl);
+
+                if (inputUrl.Contains("/channel/"))
+                {
+                    await foreach (var result in youtube.Search.GetChannelsAsync(inputUrl))
+                    {
+                        // result is ChannelSearchResult
+                        channel = await youtube.Channels.GetAsync(result.Id);
+                        break; // just grabbing one
+                    }
+                }
+                else
+                {
+                    channel = await youtube.Channels.GetByHandleAsync(inputUrl);
+                }
                 if (channels!.Any(channelList => channelList.ChannelPropeties.Url == channel.Url))
                 {
                     Console.WriteLine("Channel already on list");
@@ -181,7 +197,7 @@ namespace Watch_Local.Managers
                     //Sets OnlyAudio as false and updateScannDate as true in every channel by default
                     var cleanChannelName = DownloadManager.CleanUpTitleName(channel.Title);
                     DownloadManager.UpdateChannelIcon(channel);
-                    ChannelTime channelToSave = new(channel, scanningDate, false, true, $"{StorageManager.GetMediaDirectoryPath()}/{cleanChannelName}/{cleanChannelName}.jpg",scann);
+                    ChannelTime channelToSave = new(channel, scanningDate, false, true, $"{StorageManager.GetMediaDirectoryPath()}/{cleanChannelName}/{cleanChannelName}.jpg", scann);
                     channels!.Add(channelToSave);
                     if (scann)
                     {

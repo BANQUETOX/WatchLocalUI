@@ -78,7 +78,7 @@ namespace Watch_Local.Managers
                     }
                     await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{pathForVideo}/{audioTitle}.mp3");
                     downloadAttemps = 5;
-                    await ChannelManager.AddChannelToList(video.Author.ChannelUrl,DateTimeOffset.UtcNow,false);
+                    await ChannelManager.AddChannelToList(video.Author.ChannelId,DateTimeOffset.UtcNow,false);
                     Console.WriteLine($"{audioTitle} downloaded successfully!");
                 }
                 catch (Exception e)

@@ -16,9 +16,12 @@ public class ChannelViewModel
     public string? ChannelScannAfter { get; set; }
     public List<VideoItem> VideoList { get; set; }
     public string? ChannelPicturePath { get; set; }
+
+    public ChannelTime _channel { get; set; }
     public ChannelViewModel(ChannelTime Channel, INavigator navigator)
     {
         _navigator = navigator;
+        _channel = Channel;
         VideoList = new List<VideoItem>();
         ChannelName = Channel.ChannelPropeties.Title;
         ChannelScannAfter = Channel.GetScannAfter().Date.ToShortDateString();

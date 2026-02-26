@@ -94,7 +94,8 @@ public partial class App : Application
             new ViewMap(ViewModel: typeof(ShellModel)),
             new ViewMap<MainPage, MainModel>(),
             new DataViewMap<SecondPage, SecondModel,Models.Entity>(),
-            new DataViewMap<ChannelView, ChannelViewModel,ChannelTime>()
+            new DataViewMap<ChannelView, ChannelViewModel,ChannelTime>(),
+            new DataViewMap<ChannelSettings,ChannelSettingsModel,ChannelTime>()
         );
 
         routes.Register(
@@ -103,7 +104,9 @@ public partial class App : Application
                 [
                     new ("Main", View: views.FindByViewModel<MainModel>(), IsDefault:true),
                     new ("Second", View: views.FindByViewModel<SecondModel>()),
-                    new ("Channel", View: views.FindByViewModel<ChannelViewModel>())
+                    new ("Channel", View: views.FindByViewModel<ChannelViewModel>()),
+                    new ("ChannelSettings", View: views.FindByViewModel<ChannelSettingsModel>())
+
                 ]
             )
         );

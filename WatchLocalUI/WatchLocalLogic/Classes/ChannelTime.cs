@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WatchLocalUI.WatchLocalLogic.Managers;
 
 namespace WatchLocalUI.WatchLocalLogic.Classes;
 
@@ -28,17 +29,19 @@ public class ChannelTime
     public void ToggleOnlyAudio()
     {
         onlyAudio = !onlyAudio;
+        StorageManager.SaveChanges();
     }
 
     public void ToggleUpdateScannDate()
     {
         updateScannDate = !updateScannDate;
-
+        StorageManager.SaveChanges();
     }
 
     public void ToggleScann()
     {
         scann = !scann;
+        StorageManager.SaveChanges();
     }
 
     public bool GetIsOnlyAudio()
@@ -49,6 +52,7 @@ public class ChannelTime
     public void SetScannAfter(DateTimeOffset date)
     {
         scannAfter = date;
+        StorageManager.SaveChanges();
     }
 
     public DateTimeOffset GetScannAfter()

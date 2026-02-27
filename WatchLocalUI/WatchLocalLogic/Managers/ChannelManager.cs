@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WatchLocalUI.WatchLocalLogic.Classes;
 using WatchLocalUI.WatchLocalLogic.Managers;
@@ -183,10 +184,36 @@ namespace Watch_Local.Managers
                         break; // just grabbing one
                     }
                 }
-                else
+                if (!inputUrl.StartsWith("http"))
+                    inputUrl = "https://" + inputUrl;
+
+                if (!Uri.TryCreate(inputUrl, UriKind.Absolute, out Uri uri))
+                    return;
+
+                var segments = uri.AbsolutePath.Trim('/').Split('/');
+
+
+                // /channel/{id}
+                if (segments[0].Equals("channel", StringComparison.OrdinalIgnoreCase)
+                    && segments.Length >= 2)
+                {
+                    channel = await youtube.Channels.GetAsync(segments[1]);
+                }
+
+                // /user/{username}
+                if (segments[0].Equals("user", StringComparison.OrdinalIgnoreCase)
+                    && segments.Length >= 2)
+                {
+                    channel = await youtube.Channels.GetByUserAsync(inputUrl);
+
+                }
+
+                // /@handle
+                if (segments[0].StartsWith("@"))
                 {
                     channel = await youtube.Channels.GetByHandleAsync(inputUrl);
                 }
+
                 if (channels!.Any(channelList => channelList.ChannelPropeties.Url == channel.Url))
                 {
                     Console.WriteLine("Channel already on list");

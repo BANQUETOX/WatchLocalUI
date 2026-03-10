@@ -39,6 +39,7 @@
     </UnoFeatures>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="TagLibSharp" />
     <PackageReference Include="YoutubeExplode" />
     <PackageReference Include="YoutubeExplode.Converter" />
   </ItemGroup>

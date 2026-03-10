@@ -1,10 +1,13 @@
+using System.Diagnostics;
 using System.Net;
+using TagLib;
 using WatchLocalUI.WatchLocalLogic.Classes;
 using WatchLocalUI.WatchLocalLogic.Managers;
 using YoutubeExplode;
 using YoutubeExplode.Common;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.Streams;
+using File = TagLib.File;
 namespace Watch_Local.Managers
 {
     public class DownloadManager
@@ -40,7 +43,7 @@ namespace Watch_Local.Managers
                     await youtube.Videos.DownloadAsync(video.Url, $"{pathForVideo.FullName}/{videoTitle}.mp4", o => o
                     .SetPreset(ConversionPreset.UltraFast));
                     downloadAttemps = 5;
-                    await ChannelManager.AddChannelToList(video.Author.ChannelUrl,DateTimeOffset.UtcNow,false);
+                    await ChannelManager.AddChannelToList(video.Author.ChannelUrl, DateTimeOffset.UtcNow, false);
                     Console.WriteLine($"{videoTitle} downloaded successfully! ");
                 }
                 catch (Exception e)
@@ -59,6 +62,7 @@ namespace Watch_Local.Managers
         {
             string audioTitle = CleanUpTitleName(video.Title);
             int downloadAttemps = 0;
+            
             while (downloadAttemps < 5)
             {
                 try
@@ -69,21 +73,83 @@ namespace Watch_Local.Managers
                     UpdateChannelIcon(channel);
                     var cleanChannelName = CleanUpTitleName(channel.Title);
                     var pathForVideo = Directory.CreateDirectory($"{StorageManager.GetMediaDirectoryPath()}/{cleanChannelName}/{audioTitle}");
+                    var filePath = $"{pathForVideo}/{audioTitle}.{streamInfo.Container.Name}";
+                    var convertedPath = $"{pathForVideo}/{audioTitle}.mp3";
+
+                    if (System.IO.File.Exists(convertedPath))
+                    {
+                        Console.WriteLine("Audio Already downloaded");
+                        return;
+
+                    }
                     foreach (var tumbnail in video.Thumbnails)
                     {
                         using (WebClient client = new())
+                            try
+                            {
+                                client.DownloadFile(new Uri(tumbnail.Url), $"{pathForVideo}/{tumbnail.Resolution}.jpg");
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"Failed downloading image {tumbnail.Resolution}");
+                            }
                         {
-                            client.DownloadFile(new Uri(tumbnail.Url), $"{pathForVideo}/{tumbnail.Resolution}.jpg");
                         }
                     }
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{pathForVideo}/{audioTitle}.mp3");
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, filePath);
                     downloadAttemps = 5;
-                    await ChannelManager.AddChannelToList(video.Author.ChannelUrl,DateTimeOffset.UtcNow,false);
+
+                    using (var process = new Process())
+                    {
+                        process.StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "ffmpeg",
+                            Arguments = $"-i \"{filePath}\" -vn -ab 192k \"{convertedPath}\"",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardError = true
+                        };
+
+                        process.Start();
+                        await process.WaitForExitAsync();
+                        process.Kill();
+
+                        if (process.ExitCode != 0)
+                        {
+                            var error = process.StandardError.ReadToEnd();
+                            throw new Exception($"FFmpeg failed: {error}");
+                        }
+                    }
+
+                    using (var file = TagLib.File.Create($"{pathForVideo}/{audioTitle}.mp3"))
+                    {
+                        file.Tag.Title = video.Title;
+                        file.Tag.Comment = video.Description;
+                        file.Tag.Year = (uint)video.UploadDate.Year;
+                        file.Tag.Artists = [video.Author.ChannelTitle];
+                        string imagePath = $"{pathForVideo}/4.jpg";
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            var picture = new TagLib.Picture
+                            {
+                                Data = TagLib.ByteVector.FromPath(imagePath),
+                                Type = TagLib.PictureType.FrontCover,
+                                Description = "Cover",
+                                MimeType = "image/jpeg"
+                            };
+
+                            file.Tag.Pictures = new TagLib.IPicture[] { picture };
+                        }
+                        file.Save();
+
+                    }
+                    System.IO.File.Delete(filePath);
+                    await ChannelManager.AddChannelToList(video.Author.ChannelUrl, DateTimeOffset.UtcNow, false);
                     Console.WriteLine($"{audioTitle} downloaded successfully!");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Failed to download ${audioTitle}, trying again...");
+                    Console.WriteLine($"Failed to download {audioTitle}, trying again...");
                     downloadAttemps++;
                 }
             }
@@ -220,7 +286,7 @@ namespace Watch_Local.Managers
             return title;
 
         }
-         public static void UpdateChannelIcon(YoutubeExplode.Channels.Channel channel)
+        public static void UpdateChannelIcon(YoutubeExplode.Channels.Channel channel)
         {
             var cleanChannelName = CleanUpTitleName(channel.Title);
             var pathForChannel = Directory.CreateDirectory($"{StorageManager.GetMediaDirectoryPath()}/{cleanChannelName}");
